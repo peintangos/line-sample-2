@@ -5,12 +5,14 @@ const BASE_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
   : process.env.NEXT_PUBLIC_BASE_URL ?? "https://example.com";
 
 export function textDemo(): messagingApi.Message[] {
+  const text = "これはテキストメッセージです！\nLINE絵文字も使えます → $ ←";
+  const emojiIndex = text.indexOf("$");
   return [
     {
       type: "text",
-      text: "これはテキストメッセージです 🎉\nLINE絵文字も使えます $",
+      text,
       emojis: [
-        { index: 23, productId: "5ac1bfd5040ab15980c9b435", emojiId: "001" },
+        { index: emojiIndex, productId: "5ac1bfd5040ab15980c9b435", emojiId: "001" },
       ],
     },
   ];
