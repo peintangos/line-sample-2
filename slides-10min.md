@@ -1,5 +1,5 @@
-# 最先端AIエージェント体験を LINE の既存APIで寄せる
-## Messaging API / Flex / Quick Reply だけでどこまでいけるか
+# Messaging API だけで AI エージェント体験に寄せてみた
+## Flex / Quick Reply / sender で最先端にどこまでいけるか
 
 ---
 
@@ -19,8 +19,8 @@
 
 ### スライド 1: タイトル
 
-**最先端AIエージェント体験を LINE の既存APIで寄せる**
-Messaging API / Flex / Quick Reply だけでどこまでいけるか
+**Messaging API だけで AI エージェント体験に寄せてみた**
+Flex / Quick Reply / sender で最先端にどこまでいけるか
 
 - 発表者: 松尾淳平
 - イベント: LINE APIで試したんだけど、聞いてほしい Night LT #02
