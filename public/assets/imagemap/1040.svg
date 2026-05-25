@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="520">
+  <rect x="0" y="0" width="520" height="520" fill="#06C755"/>
+  <text x="260" y="240" text-anchor="middle" fill="white" font-size="50" font-family="sans-serif" font-weight="bold">左タップ</text>
+  <text x="260" y="310" text-anchor="middle" fill="white" font-size="30" font-family="sans-serif">→ LINE Developers</text>
+
+  <rect x="520" y="0" width="520" height="520" fill="#00B900"/>
+  <text x="780" y="240" text-anchor="middle" fill="white" font-size="50" font-family="sans-serif" font-weight="bold">右タップ</text>
+  <text x="780" y="310" text-anchor="middle" fill="white" font-size="30" font-family="sans-serif">→ メッセージ送信</text>
+
+  <line x1="520" y1="0" x2="520" y2="520" stroke="white" stroke-width="4"/>
+</svg>

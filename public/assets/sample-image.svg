@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="1040">
+  <rect width="1040" height="1040" fill="#06C755"/>
+  <text x="520" y="480" text-anchor="middle" fill="white" font-size="100" font-family="sans-serif" font-weight="bold">LINE</text>
+  <text x="520" y="600" text-anchor="middle" fill="white" font-size="50" font-family="sans-serif">Messaging API</text>
+  <text x="520" y="700" text-anchor="middle" fill="white" font-size="40" font-family="sans-serif">Sample Image</text>
+</svg>
