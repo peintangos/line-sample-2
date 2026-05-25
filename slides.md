@@ -1,243 +1,271 @@
 # LINE を AI エージェントの入口にする現実解 2026
-## — 最先端プロトコルとの差、既存APIでどこまで寄せられるか
+## 最先端を「再現」するのではなく、LINE で「翻訳」する
 
 ---
 
 ## スライド構成
+
+5〜10分のライトニングトーク想定。
+
+話の芯:
+
+> LINE は AI エージェントの実行サーフェスとしては遅れている。
+> でも、日本で約9800万人に届くユーザー接点としては強い。
+> だから最先端体験をそのまま載せるのではなく、既存APIで翻訳する。
 
 ---
 
 ### スライド 1: タイトル
 
 **LINE を AI エージェントの入口にする現実解 2026**
-最先端プロトコルとの差、既存APIでどこまで寄せられるか
+最先端を「再現」するのではなく、LINE で「翻訳」する
 
 - 発表者: 松尾淳平
 - イベント: LINE APIで試したんだけど、聞いてほしい Night LT #02
 - 日付: 2026年5月26日
 
-表現: シンプルなタイトルスライド。LINEのグリーンをアクセントカラーに。
+話す内容:
+- 今日のテーマは「LINEでAIエージェントをどこまで作れるか」
+- ただし「LINEすごい」ではなく、「制約を見た上で現実解を探す」話
+
+表現:
+- LINEグリーンをアクセントにしたシンプルなタイトル
+- サブタイトルは大きめに出す
 
 ---
 
-### スライド 2: 自己紹介
+### スライド 2: 今日の結論
 
-- 松尾淳平
-- Zenn で「LINE を AI エージェントの入口にする現実解」を執筆
-- 今日はその続編 — LINE の「限界」と「可能性」の話
+**LINE は AI エージェントの実行環境としては遅れている。**
+**でも、ユーザー接点としては強い。**
 
-表現: 記事のリンク or QRコード。簡潔に。
-
----
-
-### スライド 3: 2026年、AIエージェントの世界はこうなった
-
-プロトコルスタックの図:
-
-```
-A2UI   — AIがUIを動的生成（Google）
-AG-UI  — エージェント↔フロントエンド通信（CopilotKit, AWS）
-A2A    — エージェント↔エージェント連携（Google, 150+組織）
-MCP    — エージェント↔ツール/データ接続（Anthropic, 月9700万DL）
-MCP Apps — AIチャット内にインタラクティブUI
-```
+| 見方 | 評価 | 理由 |
+|------|------|------|
+| AIエージェントの実行サーフェス | 弱い | Streaming / Generative UI / Agent間連携が苦手 |
+| 生活導線 | 強い | 日本で約9800万人のMAU |
+| 現実解 | 翻訳する | Messaging API / Flex Message / Quick Reply / LIFF / MCP Server に分解する |
 
 話す内容:
-- MCP はデファクト。Claude/ChatGPT/Gemini/VSCode 全対応
-- A2A でエージェント同士が自律的に連携する時代
-- AG-UI/A2UI で「AIがUIを作る」のが当たり前に
-- MCP Apps でチャット内にダッシュボードやフォームが直接出る
+- 「LINEが最先端AIプラットフォームになる」は言いすぎ
+- ただし「AIエージェントへの入口」としてはかなり強い
+- 今日は最先端体験をLINEの既存APIに翻訳する
 
-表現: プロトコルスタックを積み木のような図で表現。各層の採用企業ロゴを小さく添える。
+表現:
+- 左に「実行環境としての弱さ」、右に「入口としての強さ」
+- 最後に「翻訳」というキーワードを強調
 
 ---
 
-### スライド 4: 最先端のエージェント体験
+### スライド 3: いまのAIエージェント体験を4つに分解する
 
-具体的に「今のAIエージェント」は何ができるか:
+最先端プロトコルの名前を全部覚える必要はない。
+重要なのは、ユーザー体験が何に分解できるか。
 
-- **ストリーミング**: トークンが1文字ずつ流れてくる（ChatGPT/Claude的体験）
-- **Generative UI**: AIが返答としてフォーム、チャート、ダッシュボードを動的生成
-- **Human-in-the-Loop**: 「この操作を実行していいですか？」→ 承認/拒否
-- **マルチエージェント**: 検索エージェント → 分析エージェント → レポートエージェントが自動連携
-- **MCP Apps**: チャット内で地図表示、予約フォーム入力、データ可視化
+| 体験 | 代表的な技術・プロトコル | 何がうれしいか |
+|------|--------------------------|----------------|
+| Streaming | SSE / AG-UI | 返答や状態変化がリアルタイムに見える |
+| Generative UI | A2UI / Apps SDK / MCP Apps | 文章だけでなくフォームやグラフが出る |
+| Human-in-the-Loop | tool approval / confirmation flow | 実行前にユーザーが承認できる |
+| Tool connection | MCP | AIが外部ツールやデータに接続できる |
+
+補足としてのA2A:
+- Agent-to-Agent の標準化も進んでいる
+- ただし今日の主題は、ユーザーがLINE上で体験する部分
 
 話す内容:
-- これが2026年の「普通」になりつつある
-- Vercel AI SDK、OpenAI Agents SDK、LangGraph が実現している世界
+- MCPは外部システム接続の標準として広がっている
+- AG-UI/A2UI/MCP Apps系は「チャットがUIを持つ」方向
+- A2Aは重要だが、今日のLINE活用では優先度を下げる
 
-表現: 各体験のスクリーンショットやモックアップ。「今のAI体験」の具体イメージ。
+表現:
+- プロトコルスタックではなく、4象限マップ
+- 「プロトコル名」より「体験」を大きく表示
 
 ---
 
-### スライド 5: で、LINEは？
+### スライド 4: で、LINEはどこがつらいのか
 
-**ギャップ一覧表（これがこのLTのメイン）**
-
-| 最先端 | LINEの現実 | GAP |
-|--------|-----------|-----|
-| SSEストリーミング | ❌ メッセージは完成形で届く | 大 |
-| Generative UI | ❌ Flex Message（静的JSON）が限界 | 大 |
-| MCP Apps（チャット内UI） | ❌ 埋め込みUI不可 | 大 |
-| Human-in-the-Loop | △ Quick Reply / Postback | 中 |
-| A2A（マルチエージェント） | ❌ Bot同士の直接通信なし | 大 |
-| MCP（ツール接続） | △ 自作は可能 | 小 |
-| マルチモーダル | △ 画像送受信は可能 | 小 |
+| 最先端の体験 | LINEの現実 | ギャップ |
+|--------------|------------|----------|
+| Streaming | Messaging API は完成形メッセージを送る | 大 |
+| Generative UI | Flex Message は送信時にJSONを確定する | 大 |
+| Chat内インタラクティブUI | トーク画面に任意Web UIは埋め込めない | 大 |
+| Human-in-the-Loop | Quick Reply / Postback で近い体験は作れる | 中 |
+| Tool connection | LINE Bot MCP Server でAI側からLINEを操作できる | 小〜中 |
+| Multi-agent | Bot同士の標準的な直接連携はない | 大 |
 
 話す内容:
-- 正直、めちゃくちゃ辛い
-- でも日本の9800万人が毎日使ってるプラットフォーム
-- 「使えない」じゃなく「どう戦うか」
+- LINEのMessaging APIは、基本的には「完成したメッセージを送る」設計
+- だからChatGPTやClaudeのような逐次生成・動的UIとは相性が悪い
+- でも「全滅」ではない。既存APIに分解すると寄せられる部分がある
 
-表現: 赤（❌）黄（△）で視覚的にGAPを表現。右端にGAPの大きさを棒グラフ的に。
-
----
-
-### スライド 6: 既存APIでどこまで寄せられるか
-
-**ここからが本題。** 6つの最先端機能に対して、LINE の既存APIでの近似方法を紹介。
-
-表現: 「最先端」→「LINEでの近似」を矢印で繋ぐ図。
+表現:
+- 赤・黄・緑でギャップを表示
+- 「できない」で終わらず、次のスライドへの導線として「翻訳」を置く
 
 ---
 
-### スライド 7: ① ストリーミング → LIFF + SSE
+### スライド 5: 翻訳方針
 
-- Messaging API ではストリーミング不可能
-- **LIFF (LINE内WebView) なら SSE が使える**
-- ChatGPTライクなトークン逐次表示を LINE 内で実現
+**LINEで最先端を再現しようとしない。役割ごとにAPIを割り当てる。**
 
-近似度: ◎（ほぼ同等の体験）
+| 役割 | LINEでの担当 |
+|------|--------------|
+| 日常会話 | Messaging API |
+| 承認・選択 | Quick Reply / Postback |
+| カード表示 | Flex Message |
+| 高度なUI・Streaming | LIFF |
+| AIエコシステム接続 | LINE Bot MCP Server |
+| 複数役割の見せ方 | sender の icon / name 切替 |
 
 話す内容:
-- LIFF は LINE 内で開く WebView なので、普通の Web 技術が全部使える
-- Server-Sent Events で Vercel AI SDK の streamText をそのまま繋げる
-- 「普段は Messaging API、ストリーミングが必要な時だけ LIFF に遷移」がベストプラクティス
+- LINEのトーク画面だけで全部やろうとすると苦しい
+- 普段はMessaging API、複雑な操作だけLIFFへ逃がす
+- AI側からLINEを操作したい場合はMCP Serverでつなぐ
 
-表現: Messaging API（完成形テキスト）vs LIFF（トークンが流れるアニメーション）の対比。
+表現:
+- 「最先端」から「LINE API」へ変換する翻訳テーブル
+- ここから先は具体例として3つだけ話す
 
 ---
 
-### スライド 8: ② Generative UI → Flex Message 動的生成
+### スライド 6: 近似1 - Streaming は LIFF + SSE に逃がす
 
-- A2UI は「AIがUIコンポーネントを宣言的に生成」する標準
-- LINE には Flex Message がある — CSS Flexbox ベースのカードUI
-- **Claude に Flex Message の JSON を生成させれば「Generative Flex」になる**
+| やりたいこと | Messaging API | LIFF |
+|--------------|---------------|------|
+| トークン逐次表示 | 不向き | 可能 |
+| 生成中の状態表示 | loading animation 程度 | 自由に実装可能 |
+| UI更新 | メッセージ再送信が必要 | React / Next.js 等で更新可能 |
 
-近似度: △（静的だが、内容は動的に生成可能）
+近似度: ◎
 
 話す内容:
-- Flex Message Simulator でデザイン → JSONスキーマを Claude に渡す
-- markdown-flex-message ライブラリで Markdown → Flex 自動変換も可能
-- 限界: インタラクティブ性はない。タップ → ポストバックが精一杯
+- Messaging APIでChatGPT風の1文字ずつ流れる体験は作りにくい
+- でもLIFFはLINE上で動くWebアプリなので、SSEや通常のWeb技術が使える
+- 現実解は「普段はトーク、重い生成・逐次表示はLIFF」
 
-表現: Claude が Flex Message JSON を生成 → LINE に美しいカードが表示される流れ。
+注意点:
+- LIFFへの遷移が入るので、完全なチャット内体験ではない
+- ただし体験品質はかなり近づけられる
+
+表現:
+- 左: トークに完成形テキストが届く
+- 右: LIFF内で文章が逐次表示される
 
 ---
 
-### スライド 9: ③ Human-in-the-Loop → Quick Reply + Postback
+### スライド 7: 近似2 - Generative UI は Flex Message と LIFF に分ける
 
-- 最先端: `needsApproval` フラグ一つでツール実行の承認フロー
-- LINE: **Quick Reply でユーザーに選択肢を提示 → Postback で結果を受け取る**
+| UIの種類 | LINEでの現実解 | 向いているもの |
+|----------|----------------|----------------|
+| 軽いカード | Flex Message 動的生成 | 要約、候補一覧、予約確認、商品カード |
+| 入力フォーム | LIFF | 複数項目入力、検索条件、設定画面 |
+| グラフ・地図・ダッシュボード | LIFF | 可視化、編集、複数ステップ操作 |
 
-近似度: ○（フローとしては同等、UIの自由度が低い）
+近似度:
+- Flex Message: △
+- LIFF: ○
 
 話す内容:
-- 例: AIが「Googleカレンダーに予定を追加しますか？」→ Quick Reply で「はい/いいえ」
-- Postback の data パラメータに構造化データを入れれば、複雑な承認フローも可能
-- 日時選択アクションで日時ピッカーも出せる
+- Flex MessageはCSS FlexboxベースのJSONでカードUIを作れる
+- AIにJSONを生成させれば「内容が動的なカード」は作れる
+- ただし送信後にチャット内で状態が動的更新されるわけではない
+- 本当にインタラクティブなUIはLIFFに逃がすのが現実的
 
-表現: 最先端のモーダルダイアログ vs LINE の Quick Reply ボタンの対比。
+表現:
+- 「Flex = 表示」「LIFF = 操作」と分けて見せる
+- ClaudeがFlex JSONを生成する図は使えるが、「Generative UIそのもの」とは言い切らない
 
 ---
 
-### スライド 10: ④ MCP → LINE Bot MCP Server
+### スライド 8: 近似3 - Human-in-the-Loop は Quick Reply + Postback
 
-- MCP: AIがツールやデータに接続する標準プロトコル
-- **LINE Bot MCP Server を作れば、Claude Desktop から LINE を操作できる**
+やりたい体験:
 
-近似度: ○（逆方向のMCP — LINE がツール「として」使われる）
+> AI: 「Googleカレンダーにこの予定を追加していいですか？」
+> User: 「はい」または「修正」
+> AI: 承認後にツール実行
+
+LINEでの実装:
+
+| 要素 | LINE API |
+|------|----------|
+| 承認ボタン | Quick Reply |
+| ユーザーの選択 | Postback |
+| 日時入力 | Datetime picker action |
+| 構造化された状態 | Postback data / サーバー側セッション |
+
+近似度: ○
 
 話す内容:
-- MCP Server を書けば、Claude Desktop から pushMessage、Flex Message 送信、グループ管理が可能
-- LINE Bot MCP Server は LINE 公式からも試験提供されている
-- LINE が「AIのツール」になる世界
+- Human-in-the-Loopの本質は「危ない操作の前に人間を挟む」こと
+- LINEでもQuick ReplyとPostbackで承認フローは作れる
+- 複雑なJSONをPostback dataに全部入れるより、サーバー側に状態を置いてIDだけ返す方が安全
 
-表現: Claude Desktop → MCP → LINE Bot → ユーザーのメッセージフロー図。
+表現:
+- 予定追加の1フローをLINE画面風に見せる
+- 「承認」「修正」「キャンセル」の3ボタン
 
 ---
 
-### スライド 11: ⑤ MCP Apps → LIFF
+### スライド 9: MCP と A2A は、LINEを中心に考えすぎない
 
-- MCP Apps: AIチャット内にダッシュボードやフォームを直接表示
-- LINE: **LIFF で LINE 内に自由な Web UI を表示**
+MCP:
+- MCPはAIアプリケーションを外部ツール・データ・ワークフローにつなぐ標準
+- LINE Bot MCP Serverを使うと、AI側からLINEにメッセージ送信やFlex送信ができる
+- つまりLINEは「AIの操作対象」としてエコシステムに入れる
 
-近似度: △（WebView遷移が入るのでシームレスさに欠ける）
+A2A:
+- A2Aはエージェント同士が能力を発見し、協調するためのプロトコル
+- LINEのsender切替はA2Aではない
+- できるのは「1つのBot内の役割を見た目で分ける」こと
 
 話す内容:
-- LIFF は Full/Tall/Compact の3サイズで表示可能
-- チャット→LIFF遷移のワンクッションが体験的にはマイナス
-- ただし LIFF 内では React/Next.js 等で何でもできる
+- MCPは「LINEの中にAIを閉じ込める」話ではなく、「AI側からLINEに触れる」話
+- sender切替はデモ映えするが、マルチエージェントそのものではない
+- ここを誠実に言うと、逆に技術的に信頼される
 
-表現: MCP Apps のチャット内UI vs LIFF の WebView 遷移の対比。
-
----
-
-### スライド 12: ⑥ A2A → Sender切替で擬似マルチエージェント
-
-- A2A: エージェント同士が Agent Card で能力を宣言し合い、自律的にタスクを委譲
-- LINE: **sender プロパティで1つのBotが複数のアイコン・名前で発言**
-
-近似度: △（見た目だけ。内部は1Bot）
-
-話す内容:
-- sender で「検索エージェント」「分析エージェント」を演出
-- 内部では1つのBotが Claude の Tool Use で複数の役割を切り替え
-- 真の A2A ではないが、ユーザーから見れば「複数のAIが協力してる」体験は作れる
-
-表現: 1つのBotが sender 切替で異なるアイコン・名前で発言するLINE画面のスクリーンショット。
+表現:
+- Claude / ChatGPT / Agent → MCP → LINE Bot → ユーザー
+- sender切替は「検索役」「要約役」などを1画面で見せる程度
 
 ---
 
-### スライド 13: まとめ — 近似度マップ
+### スライド 10: まとめ
 
-| 最先端 | LINE近似 | 近似度 |
-|--------|---------|--------|
-| ストリーミング | LIFF + SSE | ◎ |
-| Generative UI | Flex Message 動的生成 | △ |
-| Human-in-the-Loop | Quick Reply + Postback | ○ |
-| MCP | LINE Bot MCP Server | ○ |
-| MCP Apps | LIFF | △ |
-| A2A | sender 切替 + Tool Use | △ |
+**LINE は AI エージェントの実行サーフェスとしては遅れている。**
+**でも、入口としては強い。**
 
-話す内容:
-- 完全に再現できるものはストリーミングだけ
-- 他は「近似」— でも LINE のリーチを考えると、この近似で十分価値がある
-- 重要なのは「LINEの制約を理解した上で設計する」こと
+| 最先端体験 | LINEでの翻訳 |
+|------------|--------------|
+| Streaming | LIFF + SSE |
+| Generative UI | Flex Message 動的生成 + LIFF |
+| Human-in-the-Loop | Quick Reply + Postback |
+| Tool connection | LINE Bot MCP Server |
+| Multi-agent風の見せ方 | sender 切替。ただしA2Aではない |
 
-表現: レーダーチャートで最先端 vs LINE の近似度を視覚化。
+最後に言うこと:
 
----
+> LINEで最先端AIをそのまま再現するのは難しい。
+> でも、LINEの制約を理解してAPIを組み合わせれば、
+> AIエージェントへの「入口」としては十分戦える。
 
-### スライド 14: 結論
-
-**LINE は AI エージェントのプラットフォームとしては「遅れてる」。**
-**でも9800万人のリーチは、どんな最先端UIよりも強い。**
-
-- 制約を理解して、既存APIで最大限寄せる
-- Messaging API で日常会話、LIFF で高度な体験
-- MCP で LINE を AI エコシステムに接続する
-
-「最先端に追いつく」のではなく「最先端の体験を LINE で翻訳する」
-
-表現: 「LINE = 9800万人への入口」を強調する図。
+表現:
+- 「再現」ではなく「翻訳」を大きく表示
+- QRコードは最後に小さく配置
 
 ---
 
-### スライド 15: リンク
+### 参考リンク
 
 - 記事: https://zenn.dev/peintangos/articles/b024c86e672191
 - ショーケースBot: (LINEのQRコード)
 - GitHub: https://github.com/peintangos/line-sample-2
-
-表現: QRコード2つ（記事、Bot友だち追加）。
+- MCP: https://modelcontextprotocol.io/docs/getting-started/intro
+- A2A: https://github.com/a2aproject/A2A
+- AG-UI: https://docs.ag-ui.com/introduction
+- A2UI: https://a2ui.org/specification/v0_10/docs/a2ui_protocol/
+- LINE Flex Message: https://developers.line.biz/en/docs/messaging-api/using-flex-messages/
+- LINE Quick Reply: https://developers.line.biz/en/docs/messaging-api/using-quick-reply/
+- LINE LIFF: https://developers.line.biz/ja/docs/liff/overview/
+- LINE Bot MCP Server: https://github.com/line/line-bot-mcp-server
