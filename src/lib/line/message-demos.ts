@@ -56,7 +56,55 @@ export function videoDemo(): messagingApi.Message[] {
       type: "video",
       originalContentUrl: `${BASE_URL}/assets/sample-video.mp4`,
       previewImageUrl: `${BASE_URL}/assets/sample-image.png`,
+      trackingId: "showcase-video-001",
+    } as messagingApi.Message,
+  ];
+}
+
+export function imageCarouselDemo(): messagingApi.Message[] {
+  return [
+    {
+      type: "template",
+      altText: "画像カルーセルテンプレート",
+      template: {
+        type: "image_carousel",
+        columns: [
+          {
+            imageUrl: `${BASE_URL}/assets/sample-image.png`,
+            action: { type: "uri", label: "LINE Developers", uri: "https://developers.line.biz/" },
+          },
+          {
+            imageUrl: `${BASE_URL}/assets/sample-image.png`,
+            action: { type: "message", label: "タップ！", text: "画像カルーセルをタップしました！" },
+          },
+          {
+            imageUrl: `${BASE_URL}/assets/sample-image.png`,
+            action: { type: "postback", label: "ポストバック", data: "action=image_carousel_tap" },
+          },
+        ],
+      },
     },
+  ];
+}
+
+export function senderDemo(): messagingApi.Message[] {
+  return [
+    {
+      type: "text",
+      text: "私はアシスタントAです！sender プロパティでアイコンと名前を変更しています。",
+      sender: {
+        name: "アシスタントA",
+        iconUrl: "https://developers.line.biz/media/messaging-api/using-icon-nickname/alpha-icon.png",
+      },
+    } as messagingApi.Message,
+    {
+      type: "text",
+      text: "私はアシスタントBです！同じBotでも別人格として表示できます。",
+      sender: {
+        name: "アシスタントB",
+        iconUrl: "https://developers.line.biz/media/messaging-api/using-icon-nickname/beta-icon.png",
+      },
+    } as messagingApi.Message,
   ];
 }
 

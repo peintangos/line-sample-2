@@ -16,8 +16,14 @@ async function convert() {
     .png()
     .toFile("public/assets/imagemap/1040.png");
 
+  await sharp("public/assets/rich-menu-b.svg")
+    .resize(2500, 1686)
+    .png()
+    .toFile("public/assets/rich-menu-b.png");
+
   console.log("PNG files generated:");
   console.log("  public/assets/rich-menu.png");
+  console.log("  public/assets/rich-menu-b.png");
   console.log("  public/assets/sample-image.png");
   console.log("  public/assets/imagemap/1040.png");
 }

@@ -9,6 +9,8 @@ import {
   handlePostback,
   handleUnsend,
   handleVideoPlayComplete,
+  handleBeacon,
+  handleAccountLink,
 } from "@/lib/handlers/event-handlers";
 
 export async function handleEvent(event: webhook.Event): Promise<void> {
@@ -41,9 +43,13 @@ export async function handleEvent(event: webhook.Event): Promise<void> {
       await handleUnsend(event as webhook.UnsendEvent);
       break;
     case "videoPlayComplete":
-      await handleVideoPlayComplete(
-        event as webhook.VideoPlayCompleteEvent
-      );
+      await handleVideoPlayComplete(event as webhook.VideoPlayCompleteEvent);
+      break;
+    case "beacon":
+      await handleBeacon(event as webhook.BeaconEvent);
+      break;
+    case "accountLink":
+      await handleAccountLink(event as webhook.AccountLinkEvent);
       break;
     default:
       console.log("Unhandled event type:", event.type);
@@ -64,14 +70,39 @@ async function handleMessageEvent(event: webhook.MessageEvent): Promise<void> {
     }
   }
 
-  switch (message.type) {
-    case "text":
-      await handleTextMessage(
+  if (message.type === "text") {
+    const textMsg = message as webhook.TextMessageContent;
+
+    // メンション検知
+    const mention = textMsg.mention;
+    if (mention?.mentionees?.some((m) => "isSelf" in m && (m as { isSelf?: boolean }).isSelf)) {
+      await lineClient.replyMessage({
         replyToken,
-        (message as webhook.TextMessageContent).text,
-        source
-      );
-      break;
+        messages: [{
+          type: "text",
+          text: `🔔 Botがメンションされました！\n\nmention.mentionees で isSelf: true を検知しています。\nテキスト: 「${textMsg.text}」`,
+        }],
+      });
+      return;
+    }
+
+    // 引用メッセージ検知
+    if (textMsg.quotedMessageId) {
+      await lineClient.replyMessage({
+        replyToken,
+        messages: [{
+          type: "text",
+          text: `💬 引用メッセージを検知しました！\n\nquotedMessageId: ${textMsg.quotedMessageId}\nテキスト: 「${textMsg.text}」`,
+        }],
+      });
+      return;
+    }
+
+    await handleTextMessage(replyToken, textMsg.text, source);
+    return;
+  }
+
+  switch (message.type) {
     case "image":
     case "video":
     case "audio":
@@ -82,12 +113,10 @@ async function handleMessageEvent(event: webhook.MessageEvent): Promise<void> {
       const loc = message as webhook.LocationMessageContent;
       await lineClient.replyMessage({
         replyToken,
-        messages: [
-          {
-            type: "text",
-            text: `📍 ${loc.address ?? "位置情報"}付近ですね！\n緯度: ${loc.latitude}\n経度: ${loc.longitude}`,
-          },
-        ],
+        messages: [{
+          type: "text",
+          text: `📍 ${loc.address ?? "位置情報"}付近ですね！\n緯度: ${loc.latitude}\n経度: ${loc.longitude}\n\n💡 location メッセージで address/latitude/longitude を受信できます`,
+        }],
       });
       break;
     }
@@ -98,13 +127,9 @@ async function handleMessageEvent(event: webhook.MessageEvent): Promise<void> {
         messages: [
           {
             type: "text",
-            text: `いいスタンプですね！（パッケージ: ${sticker.packageId}, スタンプ: ${sticker.stickerId}）`,
+            text: `いいスタンプですね！\nパッケージID: ${sticker.packageId}\nスタンプID: ${sticker.stickerId}\n\n💡 Botが送れるスタンプはパッケージが限定されています`,
           },
-          {
-            type: "sticker",
-            packageId: "446",
-            stickerId: "1988",
-          },
+          { type: "sticker", packageId: "446", stickerId: "1988" },
         ],
       });
       break;

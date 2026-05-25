@@ -152,12 +152,49 @@ export async function handleVideoPlayComplete(
   const replyToken = event.replyToken;
   if (!replyToken) return;
 
+  const trackingId = event.videoPlayComplete?.trackingId;
   await lineClient.replyMessage({
     replyToken,
     messages: [
       {
         type: "text",
-        text: "🎬 動画を最後まで見てくれてありがとう！\n\nvideoPlayComplete イベントで検知できます",
+        text: `🎬 動画を最後まで見てくれてありがとう！\n\nvideoPlayComplete イベントで検知できます\ntrackingId: ${trackingId ?? "なし"}`,
+      },
+    ],
+  });
+}
+
+export async function handleBeacon(
+  event: webhook.BeaconEvent
+): Promise<void> {
+  const replyToken = event.replyToken;
+  if (!replyToken) return;
+
+  const beacon = event.beacon;
+  await lineClient.replyMessage({
+    replyToken,
+    messages: [
+      {
+        type: "text",
+        text: `📡 ビーコンイベント検知！\n\nタイプ: ${beacon.type}\nhwid: ${beacon.hwid}\ndeviceMessage: ${beacon.dm ?? "なし"}`,
+      },
+    ],
+  });
+}
+
+export async function handleAccountLink(
+  event: webhook.AccountLinkEvent
+): Promise<void> {
+  const replyToken = event.replyToken;
+  if (!replyToken) return;
+
+  const link = event.link;
+  await lineClient.replyMessage({
+    replyToken,
+    messages: [
+      {
+        type: "text",
+        text: `🔗 アカウント連携イベント\n\n結果: ${link.result}\nnonce: ${link.nonce}`,
       },
     ],
   });
