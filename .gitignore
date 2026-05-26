@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large video source files (keep GIFs only)
+images/*.mov
+images/*.MP4
+images/*.mp4

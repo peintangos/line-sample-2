@@ -16,6 +16,11 @@ import {
 } from "@/lib/line/message-demos";
 import { quickReplyDemo } from "@/lib/line/action-demos";
 import { sendMethodsExplanation, pushDemo, multicastDemo } from "./send-methods";
+import {
+  demo1LoadingFlex,
+  demo2FlexSearch,
+  demo3Proposal,
+} from "./demo-handlers";
 
 const KEYWORD_MAP: Record<string, (userId?: string) => messagingApi.Message[]> = {
   "テキスト": () => textDemo(),
@@ -62,6 +67,40 @@ export async function handleTextMessage(
 
   if (trimmed === "フォロワー数") {
     await handleFollowerCount(replyToken);
+    return;
+  }
+
+  if (trimmed === "デモ1" && userId) {
+    await demo1LoadingFlex(replyToken, userId);
+    return;
+  }
+
+  if (trimmed === "デモ2") {
+    await lineClient.replyMessage({
+      replyToken,
+      messages: demo2FlexSearch(),
+    });
+    return;
+  }
+
+  if (trimmed === "デモ3") {
+    await lineClient.replyMessage({
+      replyToken,
+      messages: demo3Proposal(),
+    });
+    return;
+  }
+
+  if (trimmed === "デモ4") {
+    await lineClient.replyMessage({
+      replyToken,
+      messages: [
+        {
+          type: "text",
+          text: "📷 画像を送ってください！\nAIが料理を分析して、sender切替で結果を返します。",
+        },
+      ],
+    });
     return;
   }
 

@@ -12,6 +12,14 @@ import {
   handleBeacon,
   handleAccountLink,
 } from "@/lib/handlers/event-handlers";
+import {
+  demo2BookingConfirm,
+  demo2BookingDone,
+  demo3Approved,
+  demo3Cancelled,
+  demo3TimeChanged,
+  demo4ImageAnalysis,
+} from "@/lib/handlers/demo-handlers";
 
 export async function handleEvent(event: webhook.Event): Promise<void> {
   switch (event.type) {
@@ -37,6 +45,7 @@ export async function handleEvent(event: webhook.Event): Promise<void> {
       console.log("Member left group");
       break;
     case "postback":
+      if (await handleDemoPostback(event as webhook.PostbackEvent)) break;
       await handlePostback(event as webhook.PostbackEvent);
       break;
     case "unsend":
@@ -104,6 +113,12 @@ async function handleMessageEvent(event: webhook.MessageEvent): Promise<void> {
 
   switch (message.type) {
     case "image":
+      if (userId) {
+        await demo4ImageAnalysis(replyToken, userId);
+      } else {
+        await handleMediaMessage(replyToken, message);
+      }
+      break;
     case "video":
     case "audio":
     case "file":
@@ -141,5 +156,70 @@ async function handleMessageEvent(event: webhook.MessageEvent): Promise<void> {
         messages: [{ type: "text", text: `${msgType} タイプのメッセージを受信しました` }],
       });
     }
+  }
+}
+
+async function handleDemoPostback(event: webhook.PostbackEvent): Promise<boolean> {
+  const data = new URLSearchParams(event.postback.data ?? "");
+  const action = data.get("action");
+  const replyToken = event.replyToken;
+  if (!replyToken || !action?.startsWith("demo")) return false;
+
+  switch (action) {
+    case "demo2_select": {
+      const shopId = data.get("shop") ?? "1";
+      await lineClient.replyMessage({
+        replyToken,
+        messages: demo2BookingConfirm(shopId),
+      });
+      return true;
+    }
+    case "demo2_book": {
+      const shopId = data.get("shop") ?? "1";
+      await lineClient.replyMessage({
+        replyToken,
+        messages: demo2BookingDone(shopId),
+      });
+      return true;
+    }
+    case "demo2_change": {
+      await lineClient.replyMessage({
+        replyToken,
+        messages: [{ type: "text", text: "条件を変更して再検索します。\n\n「デモ2」と送ってやり直してみてください。" }],
+      });
+      return true;
+    }
+    case "demo3_approve": {
+      await lineClient.replyMessage({
+        replyToken,
+        messages: demo3Approved(),
+      });
+      return true;
+    }
+    case "demo3_cancel": {
+      await lineClient.replyMessage({
+        replyToken,
+        messages: demo3Cancelled(),
+      });
+      return true;
+    }
+    case "demo3_change_time": {
+      const params = event.postback.params as Record<string, string> | undefined;
+      const datetime = params?.datetime ?? params?.date ?? "指定なし";
+      await lineClient.replyMessage({
+        replyToken,
+        messages: demo3TimeChanged(datetime),
+      });
+      return true;
+    }
+    case "demo4_record": {
+      await lineClient.replyMessage({
+        replyToken,
+        messages: [{ type: "text", text: "📝 食事記録に追加しました！\n\n本日の摂取カロリー: 1,234 kcal / 2,000 kcal" }],
+      });
+      return true;
+    }
+    default:
+      return false;
   }
 }
