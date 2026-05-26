@@ -70,12 +70,12 @@ export async function handleTextMessage(
     return;
   }
 
-  if (trimmed === "デモ1" && userId) {
+  if (trimmed.includes("渋谷") && trimmed.includes("ランチ") && userId) {
     await demo1LoadingFlex(replyToken, userId);
     return;
   }
 
-  if (trimmed === "デモ2") {
+  if (trimmed.includes("予約") && trimmed.includes("イタリアン")) {
     await lineClient.replyMessage({
       replyToken,
       messages: demo2FlexSearch(),
@@ -83,7 +83,7 @@ export async function handleTextMessage(
     return;
   }
 
-  if (trimmed === "デモ3") {
+  if (trimmed.includes("ミーティング") && (trimmed.includes("入れて") || trimmed.includes("登録") || trimmed.includes("予定"))) {
     await lineClient.replyMessage({
       replyToken,
       messages: demo3Proposal(),
@@ -91,18 +91,7 @@ export async function handleTextMessage(
     return;
   }
 
-  if (trimmed === "デモ4") {
-    await lineClient.replyMessage({
-      replyToken,
-      messages: [
-        {
-          type: "text",
-          text: "📷 画像を送ってください！\nAIが料理を分析して、sender切替で結果を返します。",
-        },
-      ],
-    });
-    return;
-  }
+  // デモ4は画像送信で自動発動（event-handler.ts で処理）
 
   if (trimmed === "Push送信" && userId) {
     await lineClient.replyMessage({
